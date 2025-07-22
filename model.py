@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 
 # Load the MNIST dataset
 (X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
