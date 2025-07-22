@@ -55,7 +55,8 @@ model.compile(
 )
 model.fit(X_train, y_train, epochs=40)
 
-
+#save model
+model.save('my_model.keras')
 
 
 
