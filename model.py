@@ -20,29 +20,40 @@ print(f"X train: {X_train.shape} | y_train: {y_train.shape}")
 print(f"X test: {X_test.shape} | y_test: {y_test.shape}")
 
 #plot random samples
-m, n = X_train.shape
+# m, n = X_train.shape
+#
+# fig, axes = plt.subplots(8, 8, figsize=(5, 5))
+# fig.tight_layout(pad=0.13, rect=[0, 0.03, 1, 0.91])  # [left, bottom, right, top]
+#
+# for i, ax in enumerate(axes.flat):
+#     # Select random indices
+#     random_index = np.random.randint(m)
+#
+#     # Select rows corresponding to the random indices and
+#     # reshape the image
+#     X_random_reshaped = X_train[random_index].reshape((28,28))
+#
+#     # Display the image
+#     ax.imshow(X_random_reshaped, cmap='gray')
+#
+#     # Display the label above the image
+#     ax.set_title(y_train[random_index])
+#     ax.set_axis_off()
+#     fig.suptitle("Label, image", fontsize=14)
+# plt.show()
 
-fig, axes = plt.subplots(8, 8, figsize=(5, 5))
-fig.tight_layout(pad=0.13, rect=[0, 0.03, 1, 0.91])  # [left, bottom, right, top]
-
-for i, ax in enumerate(axes.flat):
-    # Select random indices
-    random_index = np.random.randint(m)
-
-    # Select rows corresponding to the random indices and
-    # reshape the image
-    X_random_reshaped = X_train[random_index].reshape((28,28))
-
-    # Display the image
-    ax.imshow(X_random_reshaped, cmap='gray')
-
-    # Display the label above the image
-    ax.set_title(y_train[random_index])
-    ax.set_axis_off()
-    fig.suptitle("Label, image", fontsize=14)
-plt.show()
-
-
+#define the structure of the model
+model = Sequential([
+    tf.keras.Input(shape=(784,)),
+    Dense(units=25, activation='relu'),
+    Dense(units=15, activation='relu'),
+    Dense(units=10, activation='linear'),
+])
+model.compile(
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    optimizer=tf.keras.optimizers.Adam(learning_rate=0.001)
+)
+model.fit(X_train, y_train, epochs=40)
 
 
 
