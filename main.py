@@ -1,4 +1,10 @@
 import gradio as gr
+import tensorflow as tf
+import os
+
+#load the model
+model = tf.keras.models.load_model(r"F:\project\handwritten_digit_recognition\my_model.keras")
+
 
 def predict(image):
     imArr = (image['composite'])
