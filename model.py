@@ -85,7 +85,7 @@ model.fit(X_train, y_train, epochs=40)
 #save model
 # model.save('my_model.keras')
 
-#evaluate the model
+# evaluate the model
 prediction = model.predict(X_test)
 y_pred = np.argmax(prediction, axis=1)
 acc = tf.keras.metrics.Accuracy(name='accuracy')
