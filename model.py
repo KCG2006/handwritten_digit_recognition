@@ -55,16 +55,16 @@ model.compile(
 )
 model.fit(X_train, y_train, epochs=40)
 
-#predictions for 64 random digits
+# predictions for 64 random digits
 # m, n = X_train.shape
-#
+
 # fig, axes = plt.subplots(8, 8, figsize=(5, 5))
 # fig.tight_layout(pad=0.13, rect=[0, 0.03, 1, 0.91])  # [left, bottom, right, top]
-#
+
 # for i, ax in enumerate(axes.flat):
 #     # Select random indices
 #     random_index = np.random.randint(m)
-#
+
 #     # Select rows corresponding to the random indices and
 #     # reshape the image
 #     X_random_reshaped = X_train[random_index].reshape((28, 28))
@@ -91,9 +91,3 @@ y_pred = np.argmax(prediction, axis=1)
 acc = tf.keras.metrics.Accuracy(name='accuracy')
 acc.update_state(y_test, y_pred)
 print(f"accuracy: {acc.result()}") #accuracy: 0.9659000039100647 -> pretty good
-
-
-
-
-
-

@@ -17,12 +17,19 @@ X_test = X_test.reshape((X_test.shape[0],-1))
 X_train = X_train / 255.0
 X_test = X_test / 255.0
 
+# evaluate the model
+prediction = model.predict(X_test)
+y_pred = np.argmax(prediction, axis=1)
+acc = tf.keras.metrics.Accuracy(name='accuracy')
+acc.update_state(y_test, y_pred)
+print(f"accuracy: {acc.result()}") #accuracy: 0.9659000039100647 -> pretty good
+
 # predictions for 64 random digits
 # m, n = X_train.shape
-
+#
 # fig, axes = plt.subplots(8, 8, figsize=(5, 5))
 # fig.tight_layout(pad=0.13, rect=[0, 0.03, 1, 0.91])  # [left, bottom, right, top]
-
+#
 # for i, ax in enumerate(axes.flat):
 #     # Select random indices
 #     random_index = np.random.randint(m)
@@ -45,21 +52,17 @@ X_test = X_test / 255.0
 # fig.suptitle("Label, yhat", fontsize=14)
 # plt.show()
 
-#reshape the data to 2D array
-
-
-
 def predict(image):
     image_arr = (image['composite'])
     image_arr = 255 - image_arr
     # normalize the arr
-    image_arr =  image_arr.astype("float64")/255.0 # (1,784)
+    image_arr =  image_arr.astype("float32")/255.0 # (1,784)
     #reshape
     image_arr = image_arr.reshape(1,784)
     #predict
     prediction = model.predict(image_arr) # shape: (10,)
     y_hat = np.argmax(prediction)
-    return f"Số {y_hat} chứ còn số nào nữa!!"
+    return int(y_hat)
 
 def test(image):
     # global num
