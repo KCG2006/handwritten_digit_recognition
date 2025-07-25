@@ -2,7 +2,7 @@ import gradio as gr
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-from PIL import Image, ImageOps
+import cv2
 
 #load the model
 model = tf.keras.models.load_model(r"F:\project\handwritten_digit_recognition\my_model.keras")
@@ -17,12 +17,13 @@ X_test = X_test.reshape((X_test.shape[0],-1))
 X_train = X_train / 255.0
 X_test = X_test / 255.0
 
+# print(X_train[0], y_train[0])
 # evaluate the model
-prediction = model.predict(X_test)
-y_pred = np.argmax(prediction, axis=1)
-acc = tf.keras.metrics.Accuracy(name='accuracy')
-acc.update_state(y_test, y_pred)
-print(f"accuracy: {acc.result()}") #accuracy: 0.9659000039100647 -> pretty good
+# prediction = model.predict(X_test)
+# y_pred = np.argmax(prediction, axis=1)
+# acc = tf.keras.metrics.Accuracy(name='accuracy')
+# acc.update_state(y_test, y_pred)
+# print(f"accuracy: {acc.result()}") #accuracy: 0.9659000039100647 -> pretty good
 
 # predictions for 64 random digits
 # m, n = X_train.shape
@@ -52,11 +53,25 @@ print(f"accuracy: {acc.result()}") #accuracy: 0.9659000039100647 -> pretty good
 # fig.suptitle("Label, yhat", fontsize=14)
 # plt.show()
 
+
+
+def preprocessing(image_np):
+    """
+    image_np: numpy array 28x28, grayscale, giá trị 0-255, đã đảo màu, đã resize
+    """
+    # Áp bilateral filter giữ nét cạnh
+    # blurred = cv2.GaussianBlur(image_np, (5,5), sigmaX=2)
+    blurred = cv2.distanceTransform(image_np, cv2.DIST_L2, 5)
+    norm = cv2.normalize(blurred, None, 0.0, 1.0, cv2.NORM_MINMAX)
+
+    return norm
+
 def predict(image):
     image_arr = (image['composite'])
     image_arr = 255 - image_arr
+    filter_image_arr = preprocessing(image_arr)
     # normalize the arr
-    image_arr =  image_arr.astype("float32")/255.0 # (1,784)
+    filter_image_arr =  filter_image_arr.astype("float32")/255.0 # (1,784)
     #reshape
     image_arr = image_arr.reshape(1,784)
     #predict
@@ -65,15 +80,16 @@ def predict(image):
     return int(y_hat)
 
 def test(image):
-    # global num
-    # num = image['composite']
-    return image['composite']
+    image_arr = (image['composite'])
+    image_arr = 255 - image_arr
+    filter_image_arr = preprocessing(image_arr)
+    return filter_image_arr
 
 
 iface = gr.Interface(
     fn= predict,
-    inputs=gr.Sketchpad(canvas_size=(28,28), type='numpy', image_mode='L', brush=gr.Brush(colors="black", default_size=2)),
-    outputs="label",
+    inputs=gr.Sketchpad(canvas_size=(28,28), type='numpy', image_mode='L', brush=gr.Brush(colors="black", default_size=1)),
+    outputs=gr.Textbox(),
     title="Digits Recognizer"
 )
 
