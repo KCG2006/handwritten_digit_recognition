@@ -7,17 +7,21 @@ import matplotlib.pyplot as plt
 # Load the MNIST dataset
 (X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
 
+# change the value
+X_train_bin = np.where(X_train > 0, 255, 0).astype(np.uint8)
+X_test_bin = np.where(X_test > 0, 255, 0).astype(np.uint8)
+
 #reshape the data to 2D array
-X_train = X_train.reshape((X_train.shape[0],-1))
-X_test = X_test.reshape((X_test.shape[0],-1))
+X_train_bin = X_train_bin.reshape((X_train_bin.shape[0],-1))
+X_test_bin = X_test_bin.reshape((X_test_bin.shape[0],-1))
 
 #normalize the dataset
-X_train = X_train / 255.0
-X_test = X_test / 255.0
+X_train_bin = X_train_bin / 255.0
+X_test_bin = X_test_bin / 255.0
 
 #print out the shape of X_train ,y_train ,X_test, y_test
-print(f"X train: {X_train.shape} | y_train: {y_train.shape}")
-print(f"X test: {X_test.shape} | y_test: {y_test.shape}")
+print(f"X train: {X_train_bin.shape} | y_train: {y_train.shape}")
+print(f"X test: {X_test_bin.shape} | y_test: {y_test.shape}")
 
 #plot random samples
 # m, n = X_train.shape
@@ -53,7 +57,7 @@ model.compile(
     loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
     optimizer=tf.keras.optimizers.Adam(learning_rate=0.001)
 )
-model.fit(X_train, y_train, epochs=40)
+model.fit(X_train_bin, y_train, epochs=40)
 
 # predictions for 64 random digits
 # m, n = X_train.shape
@@ -83,10 +87,10 @@ model.fit(X_train, y_train, epochs=40)
 # fig.suptitle("Label, yhat", fontsize=14)
 # plt.show()
 #save model
-# model.save('my_model.keras')
+model.save('my_model.keras')
 
 # evaluate the model
-prediction = model.predict(X_test)
+prediction = model.predict(X_test_bin)
 y_pred = np.argmax(prediction, axis=1)
 acc = tf.keras.metrics.Accuracy(name='accuracy')
 acc.update_state(y_test, y_pred)
